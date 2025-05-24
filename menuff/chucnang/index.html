@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Menu Đăng Nhập & Chức Năng Có Đa Người Dùng</title>
+<style>
+  /* Reset and base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #app {
+    background: linear-gradient(135deg, #1c1c24 0%, #27293d 100%);
+    max-width: 360px;
+    width: 95vw;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(37, 117, 252, 0.7);
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 520px;
+    border: 1px solid #2575fc;
+  }
+  h2 {
+    margin: 0 0 1.2rem 0;
+    color: #4fc3f7;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-shadow: 0 0 7px #4fc3f7;
+    font-size: 1.5rem;
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    gap: 0.75rem;
+  }
+  nav button {
+    background: transparent;
+    border: none;
+    padding: 0.45rem 1.2rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #90caf9;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    box-shadow: 0 0 12px transparent;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  nav button::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 0;
+    top: 0;
+    left: 0;
+    background: #2575fc;
+    border-radius: 10px;
+    transition: width 0.35s cubic-bezier(0.77, 0, 0.175, 1);
+    z-index: -1;
+  }
+  nav button:hover::before {
+    width: 100%;
+  }
+  nav button:hover {
+    color: #1c1c24;
+    filter: brightness(1.15);
+  }
+  nav button.active {
+    color: #1c1c24;
+    border: 2px solid #4fc3f7;
+    box-shadow: 0 0 16px #4fc3f7;
+  }
+  nav button.active::before {
+    width: 100%;
+    background: #4fc3f7;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  label {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    color: #a0c9f9;
+    font-weight: 600;
+    text-shadow: 0 0 4px #2575fc;
+  }
+  input[type="text"],
+  input[type="password"] {
+    padding: 0.55rem 0.85rem;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    border: 2px solid #3f51b5;
+    margin-bottom: 1rem;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    background: #192528;
+    color: #d5e9ff;
+    text-shadow: 0 0 5px #2575fc;
+  }
+  input[type="text"]:focus,
+  input[type="password"]:focus {
+    border-color: #65a4ff;
+    box-shadow: 0 0 8px #65a4ff;
+    outline: none;
+  }
+  button.submit-btn {
+    background: linear-gradient(45deg, #2575fc, #4fc3f7);
+    color: #1c1c24;
+    font-weight: 700;
+    padding: 0.7rem;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 1.05rem;
+    transition: background 0.35s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px #2575fcaa;
+    letter-spacing: 1px;
+    user-select: none;
+  }
+  button.submit-btn:hover {
+    background: linear-gradient(45deg, #4fc3f7, #2575fc);
+    transform: scale(1.04);
+  }
+  .message {
+    margin-top: 0.9rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #d32f2f;
+    text-align: center;
+    text-shadow: 0 0 5px #d32f2f;
+    min-height: 22px;
+  }
+  .message.success {
+    color: #7ed957;
+    text-shadow: 0 0 8px #7ed957;
+  }
+  #functions-menu {
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+    position: relative;
+  }
+  #functions-menu.active {
+    display: flex;
+  }
+  #functions-menu h2 {
+    margin-bottom: 1.3rem;
+    font-size: 1.4rem;
+    color: #81d4fa;
+    text-shadow: 0 0 10px #81d4fa;
+    text-align: center;
+    user-select: none;
+  }
+  #welcome-msg {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4fc3f7;
+    text-align: center;
+    margin-bottom: 0;
+    user-select: none;
+    text-shadow: 0 0 6px #4fc3f7;
+  }
+  .toggle-container {
+    background: #1f2833;
+    border-radius: 16px;
+    padding: 0.65rem 1.2rem;
+    box-shadow: 0 5px 15px rgba(37, 117, 252, 0.6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s ease;
+  }
+  .toggle-container:hover {
+    background: #27303d;
+  }
+  .toggle-label {
+    font-size: 1.05rem;
+    color: #cef2ff;
+    font-weight: 600;
+    text-shadow: 0 0 7px #4fc3f7;
+  }
+  .toggle-switch {
+    position: relative;
+    width: 46px;
+    height: 25px;
+  }
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    background-color: #555;
+    border-radius: 25px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: 0.4s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #ccc;
+    border-radius: 50%;
+    transition: 0.4s;
+    box-shadow: 0 1.5px 4px rgba(0,0,0,0.3);
+  }
+  .toggle-switch input:checked + .slider {
+    background-color: #4fc3f7;
+    box-shadow: 0 0 8px #4fc3f7;
+  }
+  .toggle-switch input:checked + .slider:before {
+    transform: translateX(21px);
+    background-color: #0d3559;
+    box-shadow: 0 0 6px #81d4fa;
+  }
+  #logout-btn {
+    margin-top: 1.8rem;
+    background: linear-gradient(45deg, #e53935, #b71c1c);
+    box-shadow: 0 5px 18px #e539355e;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    color: #f5f5f5;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
+  }
+  #logout-btn:hover {
+    background: linear-gradient(45deg, #b71c1c, #e53935);
+    box-shadow: 0 7px 24px #e539355e;
+  }
+  #developer-credit {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: #82b1ffaa;
+    font-weight: 600;
+    text-align: center;
+    font-style: italic;
+    text-shadow: 0 0 3px #82b1ff88;
+    user-select: none;
+  }
+  /* Responsive mobile */
+  @media (max-width: 400px) {
+    #app {
+      max-width: 100vw;
+      height: 100vh;
+      border-radius: 0;
+      justify-content: center;
+      padding: 2rem 1.2rem;
+    }
+    nav {
+      gap: 0.5rem;
+    }
+    nav button {
+      font-size: 0.9rem;
+      padding: 0.4rem 1rem;
+      border-radius: 10px;
+    }
+    button.submit-btn {
+      font-size: 1rem;
+      padding: 0.6rem;
+      border-radius: 12px;
+    }
+    .toggle-container {
+      padding: 0.55rem 1rem;
+    }
+    .toggle-label {
+      font-size: 1rem;
+    }
+    #logout-btn {
+      font-size: 1rem;
+      padding: 0.6rem;
+      border-radius: 12px;
+    }
+    #developer-credit {
+      font-size: 0.8rem;
+      margin-top: 1.1rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <section id="functions-menu" aria-live="polite" aria-label="Menu chức năng">
+    <div id="welcome-msg"></div>
+    <div class="toggle-container" tabindex="0">
+      <span class="toggle-label">Aim Đầu</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-aim-head" />
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-container" tabindex="0">
+      <span class="toggle-label">ESP Định Vị Định</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-esp" />
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-container" tabindex="0">
+      <span class="toggle-label">Aim Target</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-aim-target" />
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-container" tabindex="0">
+      <span class="toggle-label">Nhập vào game</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-enter-game" />
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-container" tabindex="0">
+      <span class="toggle-label">80% HS</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-80hs" />
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- VIP only toggles -->
+    <div class="toggle-container vip-only" tabindex="0" style="display:none;">
+      <span class="toggle-label">Super Marcro</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-super-marcro" />
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-container vip-only" tabindex="0" style="display:none;">
+      <span class="toggle-label">Nhẹ tâm</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-nhe-tam" />
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <button class="func-button" id="logout-btn" tabindex="0">Đăng xuất</button>
+    <div id="developer-credit">Nhà phát triển: VinaModGame</div>
+  </section>
+</div>
