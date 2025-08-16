@@ -15,7 +15,7 @@ include 'theme.php'; // Include the theme definitions file
 // [8]'Cyberpunk Theme'
 // [9]'Japanese Zen'
 // [10]'Dreamy Galaxy'
-$current_theme_name = "Dark Mode Minimalist"; // <--- CHANGE THIS TO SELECT YOUR THEME
+$current_theme_name = "Cyberpunk Theme"; // <--- CHANGE THIS TO SELECT YOUR THEME
 
 // --- General Information Section ---
 // Variables used in <title> and general page content
@@ -129,4 +129,5 @@ $swal_button_hover_bg = $current_theme['--swal-button-hover-bg'];
 // Particles.js specific colors (not CSS variables, directly used in JS)
 $particle_color = $current_theme['particle-color'];
 $particle_line_color = $current_theme['particle-line-color'];
+
 ?>
